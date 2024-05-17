@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - '5435:5432'
+    volumes:
+      - db:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - shared-network
+
+  user-service:
+    image: golang:latest
+    command: >
+      sh -c "cd /go/src/app/cmd/user_service && go mod download && go run main.go"
+    environment:
+      DB_HOST: db
+    depends_on:
+      - db
+    ports:
+      - "8083:8083"
+    volumes:
+      - .:/go/src/app
+    networks:
+      - shared-network
+volumes:
+  db:
+networks:
+  shared-network:
+    external: true
