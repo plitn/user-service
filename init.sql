@@ -1,4 +1,8 @@
-
+CREATE TABLE IF NOT EXISTS capsules (
+                                        id SERIAL PRIMARY KEY NOT NULL,
+                                        name VARCHAR(255) NOT NULL,
+    user_id int
+    );
 
 create table IF NOT EXISTS stylists
 (
